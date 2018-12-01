@@ -68,16 +68,7 @@ func main() {
 	service.NewService(`api`, `/health`, func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		env,_:=json.Marshal(os.Environ())
-		_, _ = w.Write([]byte(fmt.Sprintf(`{
-		"containerId":"%s",
-		"timeZone":"%s",
-		"logPath":"%s",
-		"staticPath":"%s",
-		"serverAddress":"%s",
-		"shutdownTime":"%s",
-		"logRotateSize":"%d byte",
-		"osEnvironment":%s
-		}`,
+		_, _ = w.Write([]byte(fmt.Sprintf(`{"containerId":"%s","timeZone":"%s","logPath":"%s","staticPath":"%s","serverAddress":"%s","shutdownTime":"%s","logRotateSize":"%d byte","osEnvironment":%s}`,
 			os.Getenv("HOSTNAME"),
 			os.Getenv("TIME_ZONE"),
 			logFile,
