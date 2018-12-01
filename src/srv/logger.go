@@ -1,4 +1,4 @@
-package service
+package srv
 
 type Logger interface {
 	CurrentLevel() int

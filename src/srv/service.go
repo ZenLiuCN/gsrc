@@ -1,7 +1,8 @@
-package service
+package srv
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/NYTimes/gziphandler"
 	mux2 "github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
@@ -9,12 +10,13 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 )
 
 var (
-	srv        = make(map[string]Service)
+	srv    = make(map[string]Service)
 	Mux    *mux2.Router
 	Server *http.Server
 )
@@ -50,9 +52,9 @@ func EnableService(name string) bool {
 	}
 	return false
 }
-func ServiceStatus(name string)int  {
+func ServiceStatus(name string) int {
 	if s, ok := srv[name]; ok {
-		if s.Status(){
+		if s.Status() {
 			return 1
 		}
 		return 0
@@ -119,11 +121,11 @@ func NewServiceHandler(name string, path string, handlerFunc http.Handler) {
 func NewResourceService(path string, handlerFunc http.Handler) {
 	Mux.PathPrefix(path).Handler(handlerFunc)
 }
-func NewResourceServiceDir(path ,prefix,rootDir string,gzip bool,level int) {
-	if gzip{
+func NewResourceServiceDir(path, prefix, rootDir string, gzip bool, level int) {
+	if gzip {
 		Mux.Use(gziphandler.MustNewGzipLevelHandler(level))
 	}
-	Mux.PathPrefix(path).Handler(http.StripPrefix(prefix,http.FileServer(http.Dir(rootDir))))
+	Mux.PathPrefix(path).Handler(http.StripPrefix(prefix, http.FileServer(http.Dir(rootDir))))
 }
 func NewWebsocketService(name string, path string, handler WsHandlerFunction, readBufferSize, writeBufferSize int) *ServiceFunc {
 	if readBufferSize == 0 {
@@ -153,7 +155,7 @@ func NewWebsocketService(name string, path string, handler WsHandlerFunction, re
 		for {
 			messageType, r, err := conn.NextReader()
 			if err != nil {
-				log.Errorf(`read data error %v`,err)
+				log.Errorf(`read data error %v`, err)
 				if e := handler(c, err, messageType, r); e != nil {
 					return
 				} else {
@@ -184,7 +186,7 @@ func ListenAndServe(addr string) {
 		IdleTimeout:  time.Second * 60,
 	}
 	go func() {
-		if er := Server.ListenAndServe(); er != nil {
+		if er := Server.ListenAndServe(); er != nil &&er!=http.ErrServerClosed{
 			panic(er)
 		}
 	}()
@@ -202,9 +204,9 @@ func WaitOsShutdown(timeout time.Duration) {
 	<-stop
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
-	log.Infoln("\nShutdown with timeout: %s\n", timeout)
+	log.Infoln("Shutdown with timeout: %v", timeout)
 	if err := Server.Shutdown(ctx); err != nil {
-		logger.Errorf("Error: %v\n", err)
+		logger.Errorf("Error: %v", err)
 	} else {
 		logger.Infoln("Server stopped")
 	}
@@ -218,7 +220,7 @@ func IsRunning() bool {
 
 func loggerMiddleWare(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Infof("incoming request %+v from %+v %+v", r.RequestURI, r.RemoteAddr,r.Header)
+		log.Infof("incoming request %+v", jsonPretty(dumpRequest(r)) )
 		next.ServeHTTP(w, r)
 	})
 }
@@ -238,4 +240,26 @@ func HasEnableService(name string) bool {
 		}
 	}
 	return false
+}
+
+func dumpHeader(r *http.Request) (h []string) {
+	for k, v := range r.Header {
+		h = append(h, k + `:` + strings.Join(v,","))
+	}
+	return
+}
+func dumpRequest(r *http.Request) (q map[string]interface{}) {
+	q=make(map[string]interface{})
+	q[`url`]=r.RequestURI
+	q[`header`]=dumpHeader(r)
+	q[`remote`]=r.RemoteAddr
+	if x:=r.Header.Get(`X-Forwarded-For`);len(x)!=0{
+		q[`remote`]=x
+	}
+	return
+}
+
+func jsonPretty(obj interface{})string{
+	d,_:=json.MarshalIndent(obj,""," ")
+	return string(d)
 }

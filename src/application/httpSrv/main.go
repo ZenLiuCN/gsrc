@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path"
-	"service"
+	"srv"
 	"strconv"
 	"time"
 )
@@ -61,11 +61,11 @@ func init() {
 	w, _ := logger.NewRotateWriter(logFile, uint64(logRotateSize), time.Second*10)
 	logger.Init(logger.INFO, w, os.Stdout)
 	log = logger.GetLogger()
-	service.SetLogger(log)
+	srv.SetLogger(log)
 
 }
 func main() {
-	service.NewService(`api`, `/health`, func(w http.ResponseWriter, r *http.Request) {
+	srv.NewService(`api`, `/health`, func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		env,_:=json.Marshal(os.Environ())
 		_, _ = w.Write([]byte(fmt.Sprintf(`{"containerId":"%s","timeZone":"%s","logPath":"%s","staticPath":"%s","serverAddress":"%s","shutdownTime":"%s","logRotateSize":"%d byte","osEnvironment":%s}`,
@@ -79,7 +79,7 @@ func main() {
 			string(env),
 		)))
 	})
-	service.NewResourceServiceDir(`/`, `/`, staticPath,true,3)
-	service.ListenAndServe(listenAddr)
-	service.WaitOsShutdown(shutdownWait)
+	srv.NewResourceServiceDir(`/`, `/`, staticPath,true,3)
+	srv.ListenAndServe(listenAddr)
+	srv.WaitOsShutdown(shutdownWait)
 }
