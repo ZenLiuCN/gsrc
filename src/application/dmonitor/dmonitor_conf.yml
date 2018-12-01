@@ -1,0 +1,40 @@
+# 容器ID
+container:
+ - e082a214f003
+ - 6ed3038d8395
+# 按容器名称 正则表达式
+name: []
+# 本地docker程序路径,注意转义
+dockerpath: ""
+# 邮件配置
+smtp:
+  host: smtp.exmail.qq.com
+  port: 465
+  user:
+  pwd:
+# 发送地址
+  emails:
+  -
+# 邮件标题(标题默认添加Host {hostname})
+  header: Docker Monitor
+  from:
+# smtp是否使用SSL连接
+  ssl: true
+# 邮件间隔 可用 d,h,m,s
+  maxfreq: 30s
+# 容器CPU报警阈值  百分数
+maxcpu: 99
+# 容器内存报警阈值  百分数
+maxmem: 99
+# 主机CPU报警阈值  百分数,一秒的平均占用
+maxhostcpu: 99
+# 主机内存报警阈值  百分数
+maxhostmem: 99
+# 检查间隔时间
+sleep: 1m
+# 日志文件路径
+logfile: /var/log/docker-monitor.log
+# 日志模式,false 则不输出到日志
+log: true
+# debug模式,输出所有信息到日志
+debug: true
