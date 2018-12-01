@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/NYTimes/gziphandler"
 	mux2 "github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 	"logger"
@@ -13,13 +14,13 @@ import (
 )
 
 var (
-	srv    = make(map[string]Service)
-	mux    *mux2.Router
+	srv        = make(map[string]Service)
+	Mux    *mux2.Router
 	Server *http.Server
 )
 
 func init() {
-	mux = mux2.NewRouter()
+	Mux = mux2.NewRouter()
 }
 
 type Service interface {
@@ -32,7 +33,7 @@ type Service interface {
 }
 
 func RegisterService(service Service) {
-	service.Register(mux)
+	service.Register(Mux)
 	srv[service.Name()] = service
 }
 func DisableService(name string) bool {
@@ -102,6 +103,7 @@ func (s ServiceFunc) Status() bool {
 func (s ServiceFunc) Register(r *mux2.Router) {
 	r.Path(s.path).Handler(&s)
 }
+
 func NewService(name string, path string, handlerFunc http.HandlerFunc) *ServiceFunc {
 	s := new(ServiceFunc)
 	s.name = name
@@ -112,13 +114,16 @@ func NewService(name string, path string, handlerFunc http.HandlerFunc) *Service
 	return s
 }
 func NewServiceHandler(name string, path string, handlerFunc http.Handler) {
-	mux.Path(path).Handler(handlerFunc)
+	Mux.Path(path).Handler(handlerFunc)
 }
 func NewResourceService(path string, handlerFunc http.Handler) {
-	mux.PathPrefix(path).Handler(handlerFunc)
+	Mux.PathPrefix(path).Handler(handlerFunc)
 }
-func NewResourceServiceDir(path ,prefix,rootDir string) {
-	mux.PathPrefix(path).Handler(http.StripPrefix(prefix,http.FileServer(http.Dir(rootDir))))
+func NewResourceServiceDir(path ,prefix,rootDir string,gzip bool,level int) {
+	if gzip{
+		Mux.Use(gziphandler.MustNewGzipLevelHandler(level))
+	}
+	Mux.PathPrefix(path).Handler(http.StripPrefix(prefix,http.FileServer(http.Dir(rootDir))))
 }
 func NewWebsocketService(name string, path string, handler WsHandlerFunction, readBufferSize, writeBufferSize int) *ServiceFunc {
 	if readBufferSize == 0 {
@@ -140,11 +145,11 @@ func NewWebsocketService(name string, path string, handler WsHandlerFunction, re
 		}
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
-			handler(nil, err, -1, nil)
+			_ = handler(nil, err, -1, nil)
 			return
 		}
 		c := NewWsConnJson(conn)
-		handler(c, nil, 0, nil)
+		_ = handler(c, nil, 0, nil)
 		for {
 			messageType, r, err := conn.NextReader()
 			if err != nil {
@@ -166,14 +171,14 @@ func NewWebsocketService(name string, path string, handler WsHandlerFunction, re
 	return s
 }
 func NewMiddleWare(fun mux2.MiddlewareFunc) {
-	mux.Use(fun)
+	Mux.Use(fun)
 }
 
 func ListenAndServe(addr string) {
-	mux.Use(loggerMiddleWare)
+	Mux.Use(loggerMiddleWare)
 	Server = &http.Server{
 		Addr:         addr,
-		Handler:      mux,
+		Handler:      Mux,
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
@@ -181,7 +186,6 @@ func ListenAndServe(addr string) {
 	go func() {
 		if er := Server.ListenAndServe(); er != nil {
 			panic(er)
-			Server = nil
 		}
 	}()
 }
@@ -211,15 +215,14 @@ func IsRunning() bool {
 	}
 	return true
 }
+
 func loggerMiddleWare(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Do stuff here
-		//log.Tracef("incoming request %+v from %+v \n %+v",r.RequestURI,r.RemoteAddr,r.Header)
-		log.Infof("incoming request %+v from %+v ", r.RequestURI, r.RemoteAddr)
-		// Call the next handler, which can be another middleware in the chain, or the final handler.
+		log.Infof("incoming request %+v from %+v %+v", r.RequestURI, r.RemoteAddr,r.Header)
 		next.ServeHTTP(w, r)
 	})
 }
+
 func HasService(name string) bool {
 	for k := range srv {
 		if k == name {

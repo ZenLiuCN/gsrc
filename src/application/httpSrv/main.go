@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"logger"
 	"net/http"
 	"os"
@@ -45,17 +46,45 @@ func init() {
 	if len(staticPath) == 0 {
 		staticPath = `./web`
 	}
-
+	//region timezone for docker/scratch
+	var loc *time.Location
+	loc, e = time.LoadLocation(os.Getenv("TIME_ZONE"))
+	if e != nil {
+		loc, e = time.LoadLocation("Asia/Shanghai")
+		if e != nil {
+			panic(e)
+		}
+	}
+	//endregion
+	time.Local = loc
 	w, _ := logger.NewRotateWriter(logFile, uint64(logRotateSize), time.Second*10)
 	logger.Init(logger.INFO, w, os.Stdout)
 	log = logger.GetLogger()
 	service.SetLogger(log)
+
 }
 func main() {
-	service.NewService(`api`, `/info`, func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(os.Getenv("HOSTNAME")))
+	service.NewService(`api`, `/health`, func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		_, _ = w.Write([]byte(fmt.Sprintf(`{
+		"containerId":"%s",
+		"timeZone":"%s",
+		"logPath":"%s",
+		"staticPath":"%s",
+		"serverAddress":"%s",
+		"shutdownTime":"%s",
+		"logRotateSize":"%d byte"
+		}`,
+			os.Getenv("HOSTNAME"),
+			os.Getenv("TIME_ZONE"),
+			logFile,
+			staticPath,
+			listenAddr,
+			shutdownWait,
+			logRotateSize,
+		)))
 	})
-	service.NewResourceServiceDir(`/`, `/`, staticPath)
+	service.NewResourceServiceDir(`/`, `/`, staticPath,true,3)
 	service.ListenAndServe(listenAddr)
 	service.WaitOsShutdown(shutdownWait)
 }

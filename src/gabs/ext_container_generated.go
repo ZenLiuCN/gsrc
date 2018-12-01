@@ -67,8 +67,6 @@ func (g *Container) MustGetIntSlice(path ...string)([]int){
              }   
           }
           return r,nil
-        }else if s, ok := g.S(path...).Data().([]int); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -106,8 +104,6 @@ func (g *Container) MustGetIntSliceP(path string)([]int){
              }   
           }
           return r,nil
-        }else if s, ok := g.Path(path).Data().([]int); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -177,8 +173,6 @@ func (g *Container) MustGetInt8Slice(path ...string)([]int8){
              }   
           }
           return r,nil
-        }else if s, ok := g.S(path...).Data().([]int8); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -216,8 +210,6 @@ func (g *Container) MustGetInt8SliceP(path string)([]int8){
              }   
           }
           return r,nil
-        }else if s, ok := g.Path(path).Data().([]int8); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -287,8 +279,6 @@ func (g *Container) MustGetInt16Slice(path ...string)([]int16){
              }   
           }
           return r,nil
-        }else if s, ok := g.S(path...).Data().([]int16); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -326,8 +316,6 @@ func (g *Container) MustGetInt16SliceP(path string)([]int16){
              }   
           }
           return r,nil
-        }else if s, ok := g.Path(path).Data().([]int16); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -397,8 +385,6 @@ func (g *Container) MustGetInt32Slice(path ...string)([]int32){
              }   
           }
           return r,nil
-        }else if s, ok := g.S(path...).Data().([]int32); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -436,8 +422,6 @@ func (g *Container) MustGetInt32SliceP(path string)([]int32){
              }   
           }
           return r,nil
-        }else if s, ok := g.Path(path).Data().([]int32); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -507,8 +491,6 @@ func (g *Container) MustGetInt64Slice(path ...string)([]int64){
              }   
           }
           return r,nil
-        }else if s, ok := g.S(path...).Data().([]int64); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -546,8 +528,6 @@ func (g *Container) MustGetInt64SliceP(path string)([]int64){
              }   
           }
           return r,nil
-        }else if s, ok := g.Path(path).Data().([]int64); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -617,8 +597,6 @@ func (g *Container) MustGetUintSlice(path ...string)([]uint){
              }   
           }
           return r,nil
-        }else if s, ok := g.S(path...).Data().([]uint); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -656,8 +634,6 @@ func (g *Container) MustGetUintSliceP(path string)([]uint){
              }   
           }
           return r,nil
-        }else if s, ok := g.Path(path).Data().([]uint); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -727,8 +703,6 @@ func (g *Container) MustGetUint8Slice(path ...string)([]uint8){
              }   
           }
           return r,nil
-        }else if s, ok := g.S(path...).Data().([]uint8); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -766,8 +740,6 @@ func (g *Container) MustGetUint8SliceP(path string)([]uint8){
              }   
           }
           return r,nil
-        }else if s, ok := g.Path(path).Data().([]uint8); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -837,8 +809,6 @@ func (g *Container) MustGetUint16Slice(path ...string)([]uint16){
              }   
           }
           return r,nil
-        }else if s, ok := g.S(path...).Data().([]uint16); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -876,8 +846,6 @@ func (g *Container) MustGetUint16SliceP(path string)([]uint16){
              }   
           }
           return r,nil
-        }else if s, ok := g.Path(path).Data().([]uint16); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -947,8 +915,6 @@ func (g *Container) MustGetUint32Slice(path ...string)([]uint32){
              }   
           }
           return r,nil
-        }else if s, ok := g.S(path...).Data().([]uint32); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -986,8 +952,6 @@ func (g *Container) MustGetUint32SliceP(path string)([]uint32){
              }   
           }
           return r,nil
-        }else if s, ok := g.Path(path).Data().([]uint32); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -1057,8 +1021,6 @@ func (g *Container) MustGetUint64Slice(path ...string)([]uint64){
              }   
           }
           return r,nil
-        }else if s, ok := g.S(path...).Data().([]uint64); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -1096,8 +1058,6 @@ func (g *Container) MustGetUint64SliceP(path string)([]uint64){
              }   
           }
           return r,nil
-        }else if s, ok := g.Path(path).Data().([]uint64); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -1167,8 +1127,6 @@ func (g *Container) MustGetFloat32Slice(path ...string)([]float32){
              }   
           }
           return r,nil
-        }else if s, ok := g.S(path...).Data().([]float32); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -1206,8 +1164,6 @@ func (g *Container) MustGetFloat32SliceP(path string)([]float32){
              }   
           }
           return r,nil
-        }else if s, ok := g.Path(path).Data().([]float32); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -1265,8 +1221,6 @@ func (g *Container) MustGetFloat64Slice(path ...string)([]float64){
               
           }
           return r,nil
-        }else if s, ok := g.S(path...).Data().([]float64); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -1296,8 +1250,6 @@ func (g *Container) MustGetFloat64SliceP(path string)([]float64){
               
           }
           return r,nil
-        }else if s, ok := g.Path(path).Data().([]float64); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -1367,8 +1319,6 @@ func (g *Container) MustGetStringSlice(path ...string)([]string){
              }   
           }
           return r,nil
-        }else if s, ok := g.S(path...).Data().([]string); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -1406,8 +1356,6 @@ func (g *Container) MustGetStringSliceP(path string)([]string){
              }   
           }
           return r,nil
-        }else if s, ok := g.Path(path).Data().([]string); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -1416,9 +1364,7 @@ func (g *Container) MustGetStringSliceP(path string)([]string){
 
 
 func (g *Container) MustGetByteSlice(path ...string)([]byte){
-	if s,e:=g.GetByteSlice(path...);e!=nil{
-		panic(e)
-	}else{return s}
+	if s,e:=g.GetByteSlice(path...);e!=nil{panic(e)}else{return s}
 }
  func (g *Container) GetByteSlice(path ...string) ([]byte ,error){
  	 if  r,e:=g.GetUint8Slice(path...);e==nil{
@@ -1455,14 +1401,6 @@ func (g *Container) MustGetByteSlice(path ...string)([]byte){
              }   
           }
           return r,nil
-        }else if s, ok := g.S(path...).Data().([]byte); ok {        	 
-        	return s,nil
-        }else if s, ok := g.S(path...).Data().([]uint8); ok {
-        	  r := make([]byte, len(s))
-          		for i, V := range s { 
-            	 r[i]=byte(V)
-            }          
-        	return r,nil
         }
         return nil,ErrNotArray
       }
@@ -1506,14 +1444,6 @@ func (g *Container) MustGetByteSliceP(path string)([]byte){
              }   
           }
           return r,nil
-        }else if s, ok := g.Path(path).Data().([]byte); ok {        	 
-        	return s,nil
-        }else if s, ok := g.Path(path).Data().([]uint8); ok {
-        	  r := make([]byte, len(s))
-          		for i, V := range s { 
-            	 r[i]=byte(V)
-            }          
-        	return r,nil
         }
         return nil,ErrNotArray
       }
@@ -1571,8 +1501,6 @@ func (g *Container) MustGetBoolSlice(path ...string)([]bool){
               
           }
           return r,nil
-        }else if s, ok := g.S(path...).Data().([]bool); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }
@@ -1602,8 +1530,6 @@ func (g *Container) MustGetBoolSliceP(path string)([]bool){
               
           }
           return r,nil
-        }else if s, ok := g.Path(path).Data().([]bool); ok {        	 
-        	return s,nil
         }
         return nil,ErrNotArray
       }

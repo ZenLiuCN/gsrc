@@ -16,4 +16,5 @@ func TestParseMsgPack(t *testing.T) {
 	mencoder.MustEncode(a)
 	g,e:=ParseMsgPack(b)
 	t.Log(g,e,hex.Dump(b))
+	t.Log(g,e,hex.Dump(g.MsgPackBytes()))
 }

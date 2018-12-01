@@ -1,4 +1,7 @@
 FROM scratch
 ADD server /server
+ENV ZONEINFO=/zoneinfo.zip \
+TIME_ZONE=Asia/Shanghai
+COPY zoneinfo.zip /
 EXPOSE 80
 CMD ["/server"]
