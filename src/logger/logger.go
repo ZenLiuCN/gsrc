@@ -139,6 +139,9 @@ type Logger struct {
 	Level  LogLevel
 }
 
+func (l Logger) CurrentLevel() int {
+	return int(l.Level)
+}
 func (l Logger) Println(lvl LogLevel, args ...interface{}) {
 	if lvl < l.Level {
 		return
@@ -227,5 +230,3 @@ func NewLogger(o io.Writer, level LogLevel) *Logger {
 }
 
 //</editor-fold>
-
-
