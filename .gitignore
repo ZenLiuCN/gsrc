@@ -7,3 +7,5 @@
 /src/goit/
 /src/application/updater/main.syso
 /src/application/updater/application
+/src/application/httpSrv/docker/test.js
+/src/application/httpSrv/docker/server
