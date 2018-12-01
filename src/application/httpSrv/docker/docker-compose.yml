@@ -1,0 +1,39 @@
+version: '2'
+services:
+  poxy:
+    image: traefik  # image: traefik:alpine
+    command: --api --docker # Enables the web UI and tells Traefik to listen to docker
+    ports:
+      - "80:80"     # The HTTP port
+      - "8080:8080" # The Web UI (enabled by --api)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - cluster
+  srv:
+    image: httpsrv
+    networks:
+      - cluster
+    environment:
+      LOG_PATH: "/web/logs"
+      STATIC_PATH: /web
+    labels:
+      - traefik.frontend.rule=Host:192.168.99.100
+      - traefik.frontend.rule=PathPrefixStrip:/srv
+      #      - "traefik.backend=portainer"
+      #      - "traefik.port=9000"
+      #      - "traefik.weight=10"
+      #      - "traefik.enable=true"
+      #      - "traefik.passHostHeader=true"
+      #      - "traefik.docker.network=ntw_front"
+      #      - "traefik.frontend.entryPoints=http"
+      #      - "traefik.backend.loadbalancer.swarm=true"
+      #      - "traefik.backend.loadbalancer.method=drr"
+      # https://github.com/containous/traefik/issues/563#issuecomment-421360934
+      #      - "traefik.frontend.redirect.regex=^(.*)/portainer$$"
+      #      - "traefik.frontend.redirect.replacement=$$1/portainer/"
+      #      - "traefik.frontend.rule=PathPrefix:/portainer;ReplacePathRegex: ^/portainer/(.*) /$$1"
+    volumes:
+      - /c/Users/web:/web
+networks:
+  cluster:

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"logger"
 	"net/http"
@@ -66,6 +67,7 @@ func init() {
 func main() {
 	service.NewService(`api`, `/health`, func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		env,_:=json.Marshal(os.Environ())
 		_, _ = w.Write([]byte(fmt.Sprintf(`{
 		"containerId":"%s",
 		"timeZone":"%s",
@@ -73,7 +75,8 @@ func main() {
 		"staticPath":"%s",
 		"serverAddress":"%s",
 		"shutdownTime":"%s",
-		"logRotateSize":"%d byte"
+		"logRotateSize":"%d byte",
+		"osEnvironment":%s
 		}`,
 			os.Getenv("HOSTNAME"),
 			os.Getenv("TIME_ZONE"),
@@ -82,6 +85,7 @@ func main() {
 			listenAddr,
 			shutdownWait,
 			logRotateSize,
+			string(env),
 		)))
 	})
 	service.NewResourceServiceDir(`/`, `/`, staticPath,true,3)
