@@ -9,3 +9,5 @@
 /src/application/updater/application
 /src/application/httpSrv/docker/test.js
 /src/application/httpSrv/docker/server
+/src/application/small/
+vendor/
